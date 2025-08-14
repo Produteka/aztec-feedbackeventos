@@ -26,27 +26,17 @@
     .focus\:ring-emerald-500:focus{--tw-ring-color:var(--brand-light)!important;}
     .focus\:border-emerald-500:focus{border-color:var(--brand-light)!important;}
 
-    /* Estrellas (Opción A: activas oscuras, inactivas con contorno) */
+    /* Estrellas (activas oscuras, inactivas con contorno) */
     .star{transition:.25s;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.08))}
     .star:hover{transform:scale(1.06)}
-    /* Sin wrap: siempre en una línea */
-    #stars{white-space:nowrap}
+    #stars{white-space:nowrap} /* siempre en una línea */
     .star svg{width:34px;height:34px}
-    @media (max-width:480px){
-      .star svg{width:26px;height:26px}
-    }
-    /* Inactivas: gris visible + stroke para no perderse */
+    @media (max-width:480px){ .star svg{width:26px;height:26px} }
     .star.inactive .star-fill{
-      fill:#c9d1d9;
-      stroke:#7a8894;
-      stroke-width:1.2;
-      opacity:.95;
+      fill:#c9d1d9; stroke:#7a8894; stroke-width:1.2; opacity:.95;
     }
-    /* Activas: alto contraste */
     .star.active .star-fill{
-      fill:var(--brand-dark);
-      stroke:var(--brand-dark);
-      stroke-width:1.2;
+      fill:var(--brand-dark); stroke:var(--brand-dark); stroke-width:1.2;
     }
   </style>
 </head>
@@ -57,9 +47,9 @@
         <div class="w-24 h-24 brand-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg p-4">
           <img src="https://framerusercontent.com/images/vNczyX6ZmwhLPhsvtx36o1wPTc.svg?scale-down-to=512" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-4xl font-bold mb-4 title-refined">Guía paso a Paso</h1>
+        <h1 class="text-4xl font-bold mb-4 title-refined">Feedback del Evento</h1>
         <p class="text-gray-700 text-lg leading-relaxed max-w-lg mx-auto">
-          Recibe la guía completa de la automatización que vimos en clase
+          Ayúdanos a mejorar futuros eventos con tu valiosa opinión
         </p>
       </div>
 
@@ -107,11 +97,17 @@
           La guía incluye: <span class="font-medium">la grabación</span> y el <span class="font-medium">flujo de Make</span>.
         </div>
 
+        <!-- Imagen del flujo (se llena por JS) -->
+        <div class="mt-6 flex justify-center">
+          <img id="flowImage" src="" alt="" loading="lazy"
+               class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
+        </div>
+
         <!-- Submit -->
         <div class="text-center pt-2">
           <button type="submit" id="submitBtn"
             class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
-            <span id="submitText">Ir a la guía </span>
+            <span id="submitText">Descargar la guía paso a paso</span>
             <div id="loadingSpinner" class="loading-spinner hidden" aria-hidden="true"></div>
           </button>
         </div>
@@ -130,6 +126,49 @@
       return utmParams;
     }
 
+    // Obtener slug: ?event=... o UTM como fallback
+    function getEventSlug() {
+      const p = new URLSearchParams(location.search);
+      return p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
+    }
+
+    // Cargar guides.json y devolver datos del evento
+    async function resolveEventData() {
+      const slug = getEventSlug();
+      const fallback = { redirect: 'https://google.com', image: '', alt: 'Guía paso a paso' };
+      if (!slug) return { slug: null, ...fallback };
+
+      try {
+        const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
+        const txt = await res.text();
+        const map = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
+        const data = map[slug];
+        if (!data) return { slug, ...fallback };
+        return {
+          slug,
+          redirect: data.redirect || fallback.redirect,
+          image: data.image || '',
+          alt: data.alt || fallback.alt
+        };
+      } catch (e) {
+        console.error('Error leyendo guides.json', e);
+        return { slug, ...fallback };
+      }
+    }
+
+    // Pintar imagen si existe
+    (async function hydrateImage() {
+      const { image, alt } = await resolveEventData();
+      const imgEl = document.getElementById('flowImage');
+      if (imgEl && image) {
+        imgEl.src = image;
+        imgEl.alt = alt;
+        imgEl.classList.remove('hidden');
+      } else if (imgEl) {
+        imgEl.closest('div').style.display = 'none';
+      }
+    })();
+
     // Estrellas
     const starsWrap = document.getElementById('stars');
     const ratingInput = document.getElementById('rating');
@@ -137,7 +176,6 @@
     const labels = {1:'Deficiente',2:'Regular',3:'Bueno',4:'Muy Bueno',5:'Excelente'};
     let selectedRating = 0;
 
-    // Render 5 stars en una línea
     const tpl = document.getElementById('starTpl').content;
     const stars = [];
     for (let i=1;i<=5;i++){
@@ -176,29 +214,7 @@
     // Contador
     const textarea = document.getElementById('automationIdeas');
     const charCount = document.getElementById('charCount');
-    textarea.addEventListener('input', ()=>{
-      const count = textarea.value.length;
-      charCount.textContent = count;
-    });
-
-    // Resolver URL desde guides.json (simple)
-    async function resolveGuideUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get('event');
-      const fallback = 'https://google.com';
-      if (!slug) return fallback;
-
-      try {
-        const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
-        const txt = await res.text();
-        const clean = txt.replace(/^\uFEFF/, '').trim();
-        const map = JSON.parse(clean);
-        return map[slug] || fallback;
-      } catch (e) {
-        console.error('Error leyendo guides.json', e);
-        return fallback;
-      }
-    }
+    textarea.addEventListener('input', ()=>{ charCount.textContent = textarea.value.length; });
 
     // Submit
     const form = document.getElementById('feedbackForm');
@@ -219,7 +235,7 @@
         automationIdeas: textarea.value.trim(),
         utm: getUTMParameters(),
         timestamp: new Date().toISOString(),
-        event: new URLSearchParams(window.location.search).get('event') || null
+        event: getEventSlug()
       };
 
       try {
@@ -230,13 +246,13 @@
         });
         if (!resp.ok) throw new Error('Error al enviar feedback');
 
-        const guideUrl = await resolveGuideUrl();
-        window.location.href = guideUrl;
+        const { redirect } = await resolveEventData();
+        window.location.href = redirect;
       } catch (err) {
         console.error(err);
         alert('Hubo un error al enviar tu feedback. Intenta de nuevo.');
         submitBtn.disabled = false;
-        submitText.textContent = 'Ir a la guía';
+        submitText.textContent = 'Descargar la guía paso a paso';
         loadingSpinner.classList.add('hidden');
       }
     });
