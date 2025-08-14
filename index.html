@@ -135,26 +135,26 @@
       charCount.textContent = count;
     });
 
-    // Resolver URL desde guides.json
+    // --------- RESOLVER URL DESDE guides.json (versión simple) ---------
     async function resolveGuideUrl() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('event');
-      const fallback = 'https://tusitio.notion.site/guia-generica';
+      const fallback = 'https://google.com'; // usa lo que prefieras como fallback
       if (!slug) return fallback;
 
       try {
-        const res = await fetch('/guides.json', { cache: 'no-store' });
-        const map = await res.json();
-        const url = map[slug] || fallback;
-
-        // Validación básica de seguridad
-        const u = new URL(url);
-        const allow = ['www.notion.so','notion.so','www.notion.site','notion.site'];
-        return (u.protocol === 'https:' && allow.includes(u.hostname)) ? u.toString() : fallback;
-      } catch {
+        // Evita caché y limpia posible BOM antes de parsear
+        const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
+        const txt = await res.text();
+        const clean = txt.replace(/^\uFEFF/, '').trim();
+        const map = JSON.parse(clean);
+        return map[slug] || fallback;
+      } catch (e) {
+        console.error('Error leyendo guides.json', e);
         return fallback;
       }
     }
+    // -------------------------------------------------------------------
 
     // Submit
     const form = document.getElementById('feedbackForm');
@@ -200,5 +200,7 @@
       }
     });
   </script>
+</body>
+</html>
 </body>
 </html>
