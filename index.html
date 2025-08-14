@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Event Feedback</title>
+  <title>Accede a la clase completa</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{ --brand-light:#aaeba3; --brand-dark:#214b36; }
@@ -22,7 +22,7 @@
     .focus\:ring-emerald-500:focus{--tw-ring-color:var(--brand-light)!important;}
     .focus\:border-emerald-500:focus{border-color:var(--brand-light)!important;}
 
-    /* Estrellas (activas oscuras, inactivas con contorno) */
+    /* Estrellas */
     .star{transition:.25s;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.08))}
     .star:hover{transform:scale(1.06)}
     #stars{white-space:nowrap}
@@ -35,13 +35,13 @@
 <body class="bg-gradient-to-br from-gray-50 to-green-50 min-h-screen py-12 px-6">
   <div class="max-w-3xl mx-auto">
     <div class="bg-white rounded-3xl shadow-2xl p-12 border border-gray-100">
-      <div class="text-center mb-12">
+      <div class="text-center mb-8">
         <div class="w-24 h-24 brand-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg p-4">
           <img src="https://framerusercontent.com/images/vNczyX6ZmwhLPhsvtx36o1wPTc.svg?scale-down-to=512" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-4xl font-bold mb-4 title-refined">Feedback del Evento</h1>
-        <p class="text-gray-700 text-lg leading-relaxed max-w-lg mx-auto">
-          Ayúdanos a mejorar futuros eventos con tu valiosa opinión
+        <h1 class="text-4xl font-bold mb-3 title-refined">Accede a la clase completa</h1>
+        <p class="text-gray-700 text-lg leading-relaxed max-w-xl mx-auto">
+          Accede a la grabación, la guía paso a paso y al flujo en <strong>Make</strong>.
         </p>
       </div>
 
@@ -83,13 +83,8 @@
           </div>
         </div>
 
-        <!-- Nota de valor -->
-        <div class="text-center text-sm text-gray-700 -mt-2">
-          La guía incluye: <span class="font-medium">la grabación</span> y el <span class="font-medium">flujo de Make</span>.
-        </div>
-
-        <!-- Imagen del flujo -->
-        <div class="mt-6 flex justify-center">
+        <!-- Imagen del flujo (opcional por evento) -->
+        <div class="mt-2 flex justify-center">
           <img id="flowImage" src="" alt="" loading="lazy"
                class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
         </div>
@@ -98,7 +93,7 @@
         <div class="text-center pt-2">
           <button type="submit" id="submitBtn"
             class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
-            <span id="submitText">Descargar la guía paso a paso</span>
+            <span id="submitText">Ir a la guía</span>
             <div id="loadingSpinner" class="loading-spinner hidden" aria-hidden="true"></div>
           </button>
         </div>
@@ -147,11 +142,8 @@
     (async function hydrateImage() {
       const { image, alt } = await resolveEventData();
       const imgEl = document.getElementById('flowImage');
-      if (imgEl && image) {
-        imgEl.src = image; imgEl.alt = alt; imgEl.classList.remove('hidden');
-      } else if (imgEl) {
-        imgEl.closest('div').style.display = 'none';
-      }
+      if (imgEl && image) { imgEl.src = image; imgEl.alt = alt; imgEl.classList.remove('hidden'); }
+      else if (imgEl) { imgEl.closest('div').style.display = 'none'; }
     })();
 
     // Estrellas
@@ -212,7 +204,7 @@
       if (!selectedRating) { alert('Por favor selecciona una calificación.'); return; }
 
       submitBtn.disabled = true;
-      submitText.textContent = 'Descargando guía...';
+      submitText.textContent = 'Abriendo guía...';
       loadingSpinner.classList.remove('hidden');
 
       const formData = {
@@ -237,10 +229,12 @@
         console.error(err);
         alert('Hubo un error al enviar tu feedback. Intenta de nuevo.');
         submitBtn.disabled = false;
-        submitText.textContent = 'Descargar la guía paso a paso';
+        submitText.textContent = 'Ir a la guía';
         loadingSpinner.classList.add('hidden');
       }
     });
   </script>
+</body>
+</html>
 </body>
 </html>
