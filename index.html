@@ -111,7 +111,7 @@
         <div class="text-center pt-2">
           <button type="submit" id="submitBtn"
             class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
-            <span id="submitText">Descargar la guía paso a paso</span>
+            <span id="submitText">Ir a la guía </span>
             <div id="loadingSpinner" class="loading-spinner hidden" aria-hidden="true"></div>
           </button>
         </div>
@@ -236,7 +236,7 @@
         console.error(err);
         alert('Hubo un error al enviar tu feedback. Intenta de nuevo.');
         submitBtn.disabled = false;
-        submitText.textContent = 'Descargar la guía paso a paso';
+        submitText.textContent = 'Ir a la guía';
         loadingSpinner.classList.add('hidden');
       }
     });
