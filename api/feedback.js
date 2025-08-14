@@ -1,9 +1,15 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   try {
-    const webhookUrl = process.env.FEEDBACK_WEBHOOK_URL; // Configuras en Vercel
-    if (!webhookUrl) return res.status(500).json({ error: 'Missing FEEDBACK_WEBHOOK_URL' });
+    const webhookUrl = process.env.FEEDBACK_WEBHOOK_URL;
+    if (!webhookUrl) {
+      // No rompe el deploy; solo te avisa en runtime si falta la env var
+      return res.status(500).json({ error: 'Missing FEEDBACK_WEBHOOK_URL' });
+    }
 
     const upstream = await fetch(webhookUrl, {
       method: 'POST',
@@ -20,4 +26,4 @@ export default async function handler(req, res) {
   } catch (e) {
     return res.status(500).json({ error: 'Server error', detail: String(e) });
   }
-}
+};
