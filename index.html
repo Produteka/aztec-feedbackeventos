@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Event Feedback</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body{font-family:'Inter',sans-serif;letter-spacing:-0.01em}
+    .star{transition:.3s;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.1))}
+    .star:hover{transform:scale(1.15)}
+    .star.active .star-fill{fill:#10b981}.star.inactive .star-fill{fill:#d1d5db}
+    .submit-btn{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%);transition:.3s;letter-spacing:-0.01em}
+    .submit-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(13,51,38,.4)}
+    .submit-btn:disabled{background:#9ca3af;transform:none;box-shadow:none;cursor:not-allowed}
+    .loading-spinner{border:2px solid #f3f4f6;border-top:2px solid #10b981;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
+    .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border:1px solid #a7f3d0}
+    .title-refined{letter-spacing:-0.02em;line-height:1.1}
+    .brand-bg{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%)}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-green-50 min-h-screen py-12 px-6">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-3xl shadow-2xl p-12 border border-gray-100">
+      <div class="text-center mb-12">
+        <div class="w-24 h-24 brand-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg p-4">
+          <img src="https://framerusercontent.com/images/vNczyX6ZmwhLPhsvtx36o1wPTc.svg?scale-down-to=512" alt="Logo" class="w-full h-full object-contain">
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4 title-refined">Feedback del Evento</h1>
+        <p class="text-gray-600 text-lg leading-relaxed max-w-lg mx-auto">Ayúdanos a mejorar futuros eventos con tu valiosa opinión</p>
+      </div>
 
+      <form id="feedbackForm" class="space-y-10">
+        <div class="card-highlight rounded-2xl p-8 shadow-sm">
+          <label class="block text-xl font-semibold text-gray-800 mb-6 text-center title-refined">¿Cómo calificarías este evento en general?</label>
+          <div class="flex justify-center space-x-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
+            <!-- 5 estrellas -->
+            <template id="starTpl">
+              <div class="star inactive" role="radio" aria-checked="false" tabindex="0">
+                <svg width="48" height="48" viewBox="0 0 24 24" class="star-fill">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+            </template>
+          </div>
+          <div class="text-center">
+            <span id="ratingText" class="text-emerald-600 font-medium text-lg">Haz clic en una estrella para calificar</span>
+          </div>
+          <input type="hidden" id="rating" name="rating">
+        </div>
+
+        <div class="card-highlight rounded-2xl p-8 shadow-sm">
+          <label for="automationIdeas" class="block text-xl font-semibold text-gray-800 mb-6 title-refined">
+            ¿Qué automatizaciones te gustaría ver en futuros eventos?
+          </label>
+          <textarea id="automationIdeas" name="automationIdeas" rows="6" maxlength="500"
+            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-700 leading-relaxed"
+            placeholder="Comparte tus ideas sobre automatizaciones que te gustaría ver en futuros eventos..." required></textarea>
+          <div class="text-sm text-emerald-600 mt-3 font-medium">
+            <span id="charCount">0</span>/500 caracteres
+          </div>
+        </div>
+
+        <div class="text-center pt-4">
+          <button type="submit" id="submitBtn" class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
+            <span id="submitText">Descargar la guía paso a paso</span>
+            <div id="loadingSpinner" class="loading-spinner hidden"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // UTM params
+    function getUTMParameters() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const utmParams = {};
+      ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k=>{
+        if (urlParams.has(k)) utmParams[k] = urlParams.get(k);
+      });
+      return utmParams;
+    }
+
+    // Estrellas
+    const starsWrap = document.getElementById('stars');
+    const ratingInput = document.getElementById('rating');
+    const ratingText = document.getElementById('ratingText');
+    const labels = {1:'Deficiente',2:'Regular',3:'Bueno',4:'Muy Bueno',5:'Excelente'};
+    let selectedRating = 0;
+
+    // Render 5 stars
+    const tpl = document.getElementById('starTpl').content;
+    const stars = [];
+    for (let i=1;i<=5;i++){
+      const node = tpl.cloneNode(true);
+      const el = node.querySelector('.star');
+      el.dataset.rating = i;
+      el.setAttribute('aria-label', `${i} ${i===1?'estrella':'estrellas'}`);
+      starsWrap.appendChild(node);
+      stars.push(starsWrap.lastElementChild);
+    }
+
+    function highlight(r){
+      stars.forEach((s, idx)=>{
+        const active = idx < r;
+        s.classList.toggle('active', active);
+        s.classList.toggle('inactive', !active);
+        s.setAttribute('aria-checked', active && idx === r-1 ? 'true' : 'false');
+      });
+    }
+
+    stars.forEach(star=>{
+      star.addEventListener('click', ()=>{
+        selectedRating = parseInt(star.dataset.rating);
+        ratingInput.value = selectedRating;
+        ratingText.textContent = labels[selectedRating];
+        highlight(selectedRating);
+      });
+      star.addEventListener('keydown', (e)=>{
+        const r = parseInt(star.dataset.rating);
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); star.click(); }
+        if (e.key === 'ArrowRight' && r < 5) stars[r].focus();
+        if (e.key === 'ArrowLeft' && r > 1) stars[r-2].focus();
+      });
+    });
+
+    // Contador
+    const textarea = document.getElementById('automationIdeas');
+    const charCount = document.getElementById('charCount');
+    textarea.addEventListener('input', ()=>{
+      const count = textarea.value.length;
+      charCount.textContent = count;
+    });
+
+    // Resolver URL desde guides.json
+    async function resolveGuideUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('event');
+      const fallback = 'https://tusitio.notion.site/guia-generica';
+      if (!slug) return fallback;
+
+      try {
+        const res = await fetch('/guides.json', { cache: 'no-store' });
+        const map = await res.json();
+        const url = map[slug] || fallback;
+
+        // Validación básica de seguridad
+        const u = new URL(url);
+        const allow = ['www.notion.so','notion.so','www.notion.site','notion.site'];
+        return (u.protocol === 'https:' && allow.includes(u.hostname)) ? u.toString() : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    // Submit
+    const form = document.getElementById('feedbackForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!selectedRating) { alert('Por favor selecciona una calificación.'); return; }
+
+      submitBtn.disabled = true;
+      submitText.textContent = 'Descargando guía...';
+      loadingSpinner.classList.remove('hidden');
+
+      const formData = {
+        rating: selectedRating,
+        automationIdeas: textarea.value.trim(),
+        utm: getUTMParameters(),
+        timestamp: new Date().toISOString(),
+        event: new URLSearchParams(window.location.search).get('event') || null
+      };
+
+      try {
+        // Enviar feedback
+        const resp = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(formData)
+        });
+
+        if (!resp.ok) throw new Error('Error al enviar feedback');
+
+        // Redirigir
+        const guideUrl = await resolveGuideUrl();
+        window.location.href = guideUrl;
+      } catch (err) {
+        console.error(err);
+        alert('Hubo un error al enviar tu feedback. Intenta de nuevo.');
+        submitBtn.disabled = false;
+        submitText.textContent = 'Descargar la guía paso a paso';
+        loadingSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
