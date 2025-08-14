@@ -6,31 +6,48 @@
   <title>Event Feedback</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    :root{
+      --brand-light:#aaeba3;  /* acento */
+      --brand-dark:#214b36;   /* texto/contraste */
+    }
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body{font-family:'Inter',sans-serif;letter-spacing:-0.01em}
-    .star{transition:.3s;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.1))}
-    .star:hover{transform:scale(1.15)}
-    .star.active .star-fill{fill:#aaeba3}.star.inactive .star-fill{fill:#d1d5db}
 
-    /* Tamaños de estrella responsivos */
-    .star svg{width:40px;height:40px}
-    @media (max-width:480px){
-      .star svg{width:32px;height:32px}
-    }
-
+    /* Tarjetas y acentos */
+    .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%, var(--brand-light) 100%);border:1px solid var(--brand-light)}
+    .brand-bg{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%)}
+    .title-refined{letter-spacing:-0.02em;line-height:1.1;color:var(--brand-dark)}
+    .text-brand-dark{color:var(--brand-dark)!important}
     .submit-btn{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%);transition:.3s;letter-spacing:-0.01em}
     .submit-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(13,51,38,.4)}
     .submit-btn:disabled{background:#9ca3af;transform:none;box-shadow:none;cursor:not-allowed}
-    .loading-spinner{border:2px solid #f3f4f6;border-top:2px solid #aaeba3;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
-    .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%, #aaeba3 100%);border:1px solid #aaeba3}
-    .title-refined{letter-spacing:-0.02em;line-height:1.1}
-    .brand-bg{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%)}
+    .loading-spinner{border:2px solid #f3f4f6;border-top:2px solid var(--brand-light);border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    .focus\:ring-emerald-500:focus{--tw-ring-color:var(--brand-light)!important;}
+    .focus\:border-emerald-500:focus{border-color:var(--brand-light)!important;}
 
-    /* Overwrite de utilidades Tailwind usadas en HTML */
-    .text-emerald-600{color:#aaeba3 !important;}
-    .focus\:ring-emerald-500:focus{--tw-ring-color:#aaeba3 !important;}
-    .focus\:border-emerald-500:focus{border-color:#aaeba3 !important;}
+    /* Estrellas (Opción A: activas oscuras, inactivas con contorno) */
+    .star{transition:.25s;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.08))}
+    .star:hover{transform:scale(1.06)}
+    /* Sin wrap: siempre en una línea */
+    #stars{white-space:nowrap}
+    .star svg{width:34px;height:34px}
+    @media (max-width:480px){
+      .star svg{width:26px;height:26px}
+    }
+    /* Inactivas: gris visible + stroke para no perderse */
+    .star.inactive .star-fill{
+      fill:#c9d1d9;
+      stroke:#7a8894;
+      stroke-width:1.2;
+      opacity:.95;
+    }
+    /* Activas: alto contraste */
+    .star.active .star-fill{
+      fill:var(--brand-dark);
+      stroke:var(--brand-dark);
+      stroke-width:1.2;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-green-50 min-h-screen py-12 px-6">
@@ -40,50 +57,62 @@
         <div class="w-24 h-24 brand-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg p-4">
           <img src="https://framerusercontent.com/images/vNczyX6ZmwhLPhsvtx36o1wPTc.svg?scale-down-to=512" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-4xl font-bold text-gray-800 mb-4 title-refined">Feedback del Evento</h1>
-        <p class="text-gray-600 text-lg leading-relaxed max-w-lg mx-auto">Ayúdanos a mejorar futuros eventos con tu valiosa opinión</p>
+        <h1 class="text-4xl font-bold mb-4 title-refined">Guía paso a Paso</h1>
+        <p class="text-gray-700 text-lg leading-relaxed max-w-lg mx-auto">
+          Recibe la guía completa de la automatización que vimos en clase
+        </p>
       </div>
 
       <form id="feedbackForm" class="space-y-10">
+        <!-- Rating -->
         <div class="card-highlight rounded-2xl p-8 shadow-sm">
-          <label class="block text-xl font-semibold text-gray-800 mb-6 text-center title-refined">¿Cómo calificarías este evento en general?</label>
-          <!-- Contenedor de estrellas responsivo: wrap + gap -->
-          <div class="flex flex-wrap justify-center gap-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
+          <label class="block text-xl font-semibold mb-6 text-center title-refined">
+            ¿Cómo calificarías este evento en general?
+          </label>
+
+          <!-- Estrellas: una sola línea -->
+          <div class="flex justify-center gap-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
             <template id="starTpl">
               <div class="star inactive" role="radio" aria-checked="false" tabindex="0">
-                <svg viewBox="0 0 24 24" class="star-fill">
+                <svg viewBox="0 0 24 24" class="star-fill" aria-hidden="true">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
             </template>
           </div>
+
           <div class="text-center">
-            <span id="ratingText" class="text-emerald-600 font-medium text-lg">Haz clic en una estrella para calificar</span>
+            <span id="ratingText" class="text-brand-dark font-medium text-lg">
+              Haz clic en una estrella para calificar
+            </span>
           </div>
           <input type="hidden" id="rating" name="rating">
         </div>
 
+        <!-- Ideas -->
         <div class="card-highlight rounded-2xl p-8 shadow-sm">
-          <label for="automationIdeas" class="block text-xl font-semibold text-gray-800 mb-6 title-refined">
+          <label for="automationIdeas" class="block text-xl font-semibold mb-6 title-refined">
             ¿Qué automatizaciones te gustaría ver en futuros eventos?
           </label>
           <textarea id="automationIdeas" name="automationIdeas" rows="6" maxlength="500"
-            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-700 leading-relaxed"
+            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-800 leading-relaxed"
             placeholder="Comparte tus ideas sobre automatizaciones que te gustaría ver en futuros eventos..." required></textarea>
-          <div class="text-sm text-emerald-600 mt-3 font-medium">
+          <div class="text-sm text-brand-dark mt-3 font-medium">
             <span id="charCount">0</span>/500 caracteres
           </div>
         </div>
 
-        <!-- Nota de valor de la guía -->
-        <div class="text-center text-sm text-gray-600 -mt-2">
+        <!-- Nota de valor -->
+        <div class="text-center text-sm text-gray-700 -mt-2">
           La guía incluye: <span class="font-medium">la grabación</span> y el <span class="font-medium">flujo de Make</span>.
         </div>
 
+        <!-- Submit -->
         <div class="text-center pt-2">
-          <button type="submit" id="submitBtn" class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
+          <button type="submit" id="submitBtn"
+            class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
             <span id="submitText">Descargar la guía paso a paso</span>
-            <div id="loadingSpinner" class="loading-spinner hidden"></div>
+            <div id="loadingSpinner" class="loading-spinner hidden" aria-hidden="true"></div>
           </button>
         </div>
       </form>
@@ -108,7 +137,7 @@
     const labels = {1:'Deficiente',2:'Regular',3:'Bueno',4:'Muy Bueno',5:'Excelente'};
     let selectedRating = 0;
 
-    // Render 5 stars
+    // Render 5 stars en una línea
     const tpl = document.getElementById('starTpl').content;
     const stars = [];
     for (let i=1;i<=5;i++){
@@ -152,15 +181,14 @@
       charCount.textContent = count;
     });
 
-    // --------- RESOLVER URL DESDE guides.json (simple) ---------
+    // Resolver URL desde guides.json (simple)
     async function resolveGuideUrl() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('event');
-      const fallback = 'https://google.com'; // cambia si quieres otro
+      const fallback = 'https://google.com';
       if (!slug) return fallback;
 
       try {
-        // Evita caché y limpia posible BOM antes de parsear
         const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
         const txt = await res.text();
         const clean = txt.replace(/^\uFEFF/, '').trim();
@@ -171,7 +199,6 @@
         return fallback;
       }
     }
-    // -----------------------------------------------------------
 
     // Submit
     const form = document.getElementById('feedbackForm');
@@ -196,16 +223,13 @@
       };
 
       try {
-        // Enviar feedback
         const resp = await fetch('/api/feedback', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify(formData)
         });
-
         if (!resp.ok) throw new Error('Error al enviar feedback');
 
-        // Redirigir
         const guideUrl = await resolveGuideUrl();
         window.location.href = guideUrl;
       } catch (err) {
