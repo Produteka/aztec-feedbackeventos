@@ -1,4 +1,12 @@
 {
-  "haz-tech-1": "https://produteka.notion.site/aztec-reuniones-virtuales",
-  "haz-tech-2": "https://produteka.notion.site/aztec-reuniones-virtuales"
+  "haz-tech-1": {
+    "redirect": "https://produteka.notion.site/aztec-reuniones-virtuales?source=copy_link",
+    "image": "/haz-tech-1.png",
+    "alt": "Recibe el flujo completo en Make — Haz Tech 1"
+  },
+  "haz-tech-2": {
+    "redirect": "https://www.notion.so/tu-guia-ht2",
+    "image": "/haz-tech-2.png",
+    "alt": "Recibe el flujo completo en Make — Haz Tech 2"
+  }
 }
