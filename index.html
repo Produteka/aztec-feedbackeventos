@@ -10,15 +10,27 @@
     body{font-family:'Inter',sans-serif;letter-spacing:-0.01em}
     .star{transition:.3s;cursor:pointer;filter:drop-shadow(0 2px 4px rgba(0,0,0,.1))}
     .star:hover{transform:scale(1.15)}
-    .star.active .star-fill{fill:#10b981}.star.inactive .star-fill{fill:#d1d5db}
+    .star.active .star-fill{fill:#aaeba3}.star.inactive .star-fill{fill:#d1d5db}
+
+    /* Tamaños de estrella responsivos */
+    .star svg{width:40px;height:40px}
+    @media (max-width:480px){
+      .star svg{width:32px;height:32px}
+    }
+
     .submit-btn{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%);transition:.3s;letter-spacing:-0.01em}
     .submit-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(13,51,38,.4)}
     .submit-btn:disabled{background:#9ca3af;transform:none;box-shadow:none;cursor:not-allowed}
-    .loading-spinner{border:2px solid #f3f4f6;border-top:2px solid #10b981;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
-    .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);border:1px solid #a7f3d0}
+    .loading-spinner{border:2px solid #f3f4f6;border-top:2px solid #aaeba3;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
+    .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%, #aaeba3 100%);border:1px solid #aaeba3}
     .title-refined{letter-spacing:-0.02em;line-height:1.1}
     .brand-bg{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%)}
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    /* Overwrite de utilidades Tailwind usadas en HTML */
+    .text-emerald-600{color:#aaeba3 !important;}
+    .focus\:ring-emerald-500:focus{--tw-ring-color:#aaeba3 !important;}
+    .focus\:border-emerald-500:focus{border-color:#aaeba3 !important;}
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-green-50 min-h-screen py-12 px-6">
@@ -35,11 +47,11 @@
       <form id="feedbackForm" class="space-y-10">
         <div class="card-highlight rounded-2xl p-8 shadow-sm">
           <label class="block text-xl font-semibold text-gray-800 mb-6 text-center title-refined">¿Cómo calificarías este evento en general?</label>
-          <div class="flex justify-center space-x-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
-            <!-- 5 estrellas -->
+          <!-- Contenedor de estrellas responsivo: wrap + gap -->
+          <div class="flex flex-wrap justify-center gap-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
             <template id="starTpl">
               <div class="star inactive" role="radio" aria-checked="false" tabindex="0">
-                <svg width="48" height="48" viewBox="0 0 24 24" class="star-fill">
+                <svg viewBox="0 0 24 24" class="star-fill">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
               </div>
@@ -63,7 +75,12 @@
           </div>
         </div>
 
-        <div class="text-center pt-4">
+        <!-- Nota de valor de la guía -->
+        <div class="text-center text-sm text-gray-600 -mt-2">
+          La guía incluye: <span class="font-medium">la grabación</span> y el <span class="font-medium">flujo de Make</span>.
+        </div>
+
+        <div class="text-center pt-2">
           <button type="submit" id="submitBtn" class="submit-btn text-white font-bold py-5 px-12 rounded-2xl text-xl inline-flex items-center space-x-3 shadow-lg">
             <span id="submitText">Descargar la guía paso a paso</span>
             <div id="loadingSpinner" class="loading-spinner hidden"></div>
@@ -135,11 +152,11 @@
       charCount.textContent = count;
     });
 
-    // --------- RESOLVER URL DESDE guides.json (versión simple) ---------
+    // --------- RESOLVER URL DESDE guides.json (simple) ---------
     async function resolveGuideUrl() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('event');
-      const fallback = 'https://google.com'; // usa lo que prefieras como fallback
+      const fallback = 'https://google.com'; // cambia si quieres otro
       if (!slug) return fallback;
 
       try {
@@ -154,7 +171,7 @@
         return fallback;
       }
     }
-    // -------------------------------------------------------------------
+    // -----------------------------------------------------------
 
     // Submit
     const form = document.getElementById('feedbackForm');
@@ -200,7 +217,5 @@
       }
     });
   </script>
-</body>
-</html>
 </body>
 </html>
