@@ -9,4 +9,9 @@
     "image": "/haz-tech-2.png",
     "alt": "Recibe el flujo completo en Make — Haz Tech 2"
   }
+  "haz-tech-3": {
+    "redirect": "https://produteka.notion.site/aztec-asistente-resumen-noticias?source=copy_link",
+    "image": "/haz-tech-3.png",
+    "alt": "Recibe el flujo completo en N8N — Haz Tech 3"
+  }
 }
