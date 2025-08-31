@@ -1,4 +1,5 @@
-// api/feedback.js (CommonJS)
+// /api/feedback.js
+// En Vercel Functions (Node.js) con CommonJS
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -12,23 +13,26 @@ module.exports = async (req, res) => {
     }
 
     const body = req.body || {};
-
-    // --- Validaciones mínimas ---
     const email = String(body.email || '').trim();
     const whatsappRaw = String(body.whatsapp || '').trim();
-    if (!email) return res.status(400).json({ error: 'Email is required' });
-    if (!whatsappRaw) return res.status(400).json({ error: 'WhatsApp is required' });
 
-    // Normalización básica a E.164 (si no incluye +, puedes setear por defecto +57)
-    const defaultCountryCode = '+57'; // cambia si quieres otro por defecto
-    let whatsapp = whatsappRaw.replace(/[^\d+]/g, ''); // deja solo dígitos y '+'
-    if (!whatsapp.startsWith('+')) whatsapp = defaultCountryCode + whatsapp;
+    // Validaciones servidor (por si alguien se salta el front)
+    const emailOk = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    if (!emailOk) return res.status(400).json({ error: 'Invalid email' });
 
-    // Construimos payload final hacia el webhook
+    // Normalización básica E.164-like
+    // Esperamos que venga con código (p.ej. +57), pero igual limpiamos
+    let whatsapp = whatsappRaw.replace(/[^\d+]/g, ''); // deja + y dígitos
+    if (!whatsapp.startsWith('+')) whatsapp = '+' + whatsapp;
+    const onlyDigits = whatsapp.replace(/\D/g, '');
+    if (onlyDigits.length < 8 || onlyDigits.length > 15) {
+      return res.status(400).json({ error: 'Invalid WhatsApp number' });
+    }
+
     const payload = {
       email,
       whatsapp,
-      utm: body.utm || {},
+      utm: body.utm || {},          // { utm_source, utm_medium, ... }
       timestamp: body.timestamp || new Date().toISOString(),
       event: body.event || null,
       userAgent: req.headers['user-agent'] || '',
