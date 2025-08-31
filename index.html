@@ -43,10 +43,9 @@
              class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
       </div>
 
-      <!-- FORM: solo correo y WhatsApp -->
+      <!-- FORM: correo + WhatsApp + ideas -->
       <form id="accessForm" class="space-y-8" novalidate>
         <div class="card-highlight rounded-2xl p-8 shadow-sm space-y-6">
-
           <!-- Email -->
           <div>
             <label for="email" class="block text-xl font-semibold mb-2 title-refined">Correo electrónico</label>
@@ -64,18 +63,77 @@
             <p id="emailError" class="text-sm text-red-600 mt-1 hidden">Escribe un correo válido.</p>
           </div>
 
-          <!-- WhatsApp con select de indicativo -->
+          <!-- WhatsApp con select de indicativo (lista ampliada) -->
           <div>
             <label class="block text-xl font-semibold mb-2 title-refined">Número de WhatsApp</label>
             <div class="flex gap-3">
               <select id="countryCode" name="countryCode" required
                 class="px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                <option value="+57" selected>🇨🇴 +57</option>
-                <option value="+52">🇲🇽 +52</option>
-                <option value="+54">🇦🇷 +54</option>
-                <option value="+56">🇨🇱 +56</option>
-                <option value="+34">🇪🇸 +34</option>
-                <option value="+1">🇺🇸 +1</option>
+                <option value="+57" selected>🇨🇴 +57 Colombia</option>
+                <option value="+52">🇲🇽 +52 México</option>
+                <option value="+54">🇦🇷 +54 Argentina</option>
+                <option value="+56">🇨🇱 +56 Chile</option>
+                <option value="+51">🇵🇪 +51 Perú</option>
+                <option value="+58">🇻🇪 +58 Venezuela</option>
+                <option value="+34">🇪🇸 +34 España</option>
+                <option value="+1">🇺🇸 +1 Estados Unidos</option>
+                <option value="+55">🇧🇷 +55 Brasil</option>
+                <option value="+593">🇪🇨 +593 Ecuador</option>
+                <option value="+598">🇺🇾 +598 Uruguay</option>
+                <option value="+507">🇵🇦 +507 Panamá</option>
+                <option value="+505">🇳🇮 +505 Nicaragua</option>
+                <option value="+504">🇭🇳 +504 Honduras</option>
+                <option value="+503">🇸🇻 +503 El Salvador</option>
+                <option value="+502">🇬🇹 +502 Guatemala</option>
+                <option value="+506">🇨🇷 +506 Costa Rica</option>
+                <option value="+53">🇨🇺 +53 Cuba</option>
+                <option value="+1-809">🇩🇴 +1 809 R. Dominicana</option>
+                <option value="+1-829">🇩🇴 +1 829 R. Dominicana</option>
+                <option value="+1-849">🇩🇴 +1 849 R. Dominicana</option>
+                <option value="+44">🇬🇧 +44 Reino Unido</option>
+                <option value="+353">🇮🇪 +353 Irlanda</option>
+                <option value="+33">🇫🇷 +33 Francia</option>
+                <option value="+49">🇩🇪 +49 Alemania</option>
+                <option value="+39">🇮🇹 +39 Italia</option>
+                <option value="+31">🇳🇱 +31 Países Bajos</option>
+                <option value="+41">🇨🇭 +41 Suiza</option>
+                <option value="+47">🇳🇴 +47 Noruega</option>
+                <option value="+46">🇸🇪 +46 Suecia</option>
+                <option value="+45">🇩🇰 +45 Dinamarca</option>
+                <option value="+372">🇪🇪 +372 Estonia</option>
+                <option value="+371">🇱🇻 +371 Letonia</option>
+                <option value="+370">🇱🇹 +370 Lituania</option>
+                <option value="+48">🇵🇱 +48 Polonia</option>
+                <option value="+420">🇨🇿 +420 Chequia</option>
+                <option value="+43">🇦🇹 +43 Austria</option>
+                <option value="+351">🇵🇹 +351 Portugal</option>
+                <option value="+30">🇬🇷 +30 Grecia</option>
+                <option value="+90">🇹🇷 +90 Turquía</option>
+                <option value="+7">🇷🇺 +7 Rusia</option>
+                <option value="+380">🇺🇦 +380 Ucrania</option>
+                <option value="+972">🇮🇱 +972 Israel</option>
+                <option value="+971">🇦🇪 +971 EAU</option>
+                <option value="+966">🇸🇦 +966 Arabia Saudita</option>
+                <option value="+91">🇮🇳 +91 India</option>
+                <option value="+880">🇧🇩 +880 Bangladesh</option>
+                <option value="+92">🇵🇰 +92 Pakistán</option>
+                <option value="+81">🇯🇵 +81 Japón</option>
+                <option value="+82">🇰🇷 +82 Corea del Sur</option>
+                <option value="+86">🇨🇳 +86 China</option>
+                <option value="+63">🇵🇭 +63 Filipinas</option>
+                <option value="+62">🇮🇩 +62 Indonesia</option>
+                <option value="+60">🇲🇾 +60 Malasia</option>
+                <option value="+65">🇸🇬 +65 Singapur</option>
+                <option value="+66">🇹🇭 +66 Tailandia</option>
+                <option value="+84">🇻🇳 +84 Vietnam</option>
+                <option value="+61">🇦🇺 +61 Australia</option>
+                <option value="+64">🇳🇿 +64 Nueva Zelanda</option>
+                <option value="+27">🇿🇦 +27 Sudáfrica</option>
+                <option value="+20">🇪🇬 +20 Egipto</option>
+                <option value="+212">🇲🇦 +212 Marruecos</option>
+                <option value="+216">🇹🇳 +216 Túnez</option>
+                <option value="+234">🇳🇬 +234 Nigeria</option>
+                <option value="+254">🇰🇪 +254 Kenia</option>
               </select>
               <input
                 id="whatsapp"
@@ -83,15 +141,33 @@
                 type="tel"
                 required
                 inputmode="numeric"
-                pattern="^[0-9]{7,12}$"
+                pattern="^[0-9]{6,12}$"
                 class="flex-1 px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 placeholder="3001234567"
               />
             </div>
-            <p class="text-sm text-brand-dark mt-2">Escribe el número sin el código de país. Solo dígitos (7–12).</p>
-            <p id="phoneError" class="text-sm text-red-600 mt-1 hidden">Revisa el número: deben ser 7 a 12 dígitos.</p>
+            <p class="text-sm text-brand-dark mt-2">Escribe el número sin el código de país. Solo dígitos (6–12).</p>
+            <p id="phoneError" class="text-sm text-red-600 mt-1 hidden">Revisa el número: deben ser 6 a 12 dígitos.</p>
           </div>
 
+          <!-- Ideas de automatizaciones -->
+          <div>
+            <label for="automationIdeas" class="block text-xl font-semibold mb-2 title-refined">
+              ¿Qué automatizaciones te gustaría ver en futuros eventos?
+            </label>
+            <textarea
+              id="automationIdeas"
+              name="automationIdeas"
+              rows="6"
+              maxlength="500"
+              required
+              class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-800 leading-relaxed"
+              placeholder="Comparte tus ideas sobre automatizaciones que te gustaría ver en futuros eventos..."
+            ></textarea>
+            <div class="text-sm text-brand-dark mt-2 font-medium">
+              <span id="charCount">0</span>/500 caracteres
+            </div>
+          </div>
         </div>
 
         <!-- Submit -->
@@ -114,13 +190,16 @@
       ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k=>{
         if (urlParams.has(k)) utm[k] = urlParams.get(k);
       });
-      // valor por defecto si no viene nada
-      if (!utm.utm_source) utm.utm_source = 'direct';
+      // fuerza "website" si no viene utm_source
+      if (!utm.utm_source) utm.utm_source = 'website';
       return utm;
     }
     function getEventSlug() {
       const p = new URLSearchParams(location.search);
-      return p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
+      const raw = p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
+      if (!raw) return null;
+      // limpia por si pegan un segundo ? o fragmentos
+      return String(raw).split('?')[0].split('#')[0].split('&')[0];
     }
 
     async function resolveEventData() {
@@ -160,20 +239,15 @@
     const phoneEl = document.getElementById('whatsapp');
     const phoneError = document.getElementById('phoneError');
     const ccEl = document.getElementById('countryCode');
+    const ideasEl = document.getElementById('automationIdeas');
+    const charCount = document.getElementById('charCount');
 
-    function isValidEmail(v){
-      return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
-    }
-    function isValidLocalNumber(v){
-      return /^[0-9]{7,12}$/.test(v);
-    }
+    function isValidEmail(v){ return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v); }
+    function isValidLocalNumber(v){ return /^[0-9]{6,12}$/.test(v); }
 
-    emailEl.addEventListener('input', ()=>{
-      emailError.classList.toggle('hidden', isValidEmail(emailEl.value.trim()));
-    });
-    phoneEl.addEventListener('input', ()=>{
-      phoneError.classList.toggle('hidden', isValidLocalNumber(phoneEl.value.trim()));
-    });
+    emailEl.addEventListener('input', ()=>{ emailError.classList.toggle('hidden', isValidEmail(emailEl.value.trim())); });
+    phoneEl.addEventListener('input', ()=>{ phoneError.classList.toggle('hidden', isValidLocalNumber(phoneEl.value.trim())); });
+    ideasEl.addEventListener('input', ()=>{ charCount.textContent = ideasEl.value.length; });
 
     /* ---------------- Submit ---------------- */
     const form = document.getElementById('accessForm');
@@ -187,14 +261,15 @@
       const email = emailEl.value.trim();
       const localNumber = phoneEl.value.trim();
       const countryCode = ccEl.value;
+      const whatsapp = countryCode + localNumber;
+      const automationIdeas = ideasEl.value.trim();
 
       // Validación
       let valid = true;
       if (!isValidEmail(email)) { emailError.classList.remove('hidden'); valid = false; }
       if (!isValidLocalNumber(localNumber)) { phoneError.classList.remove('hidden'); valid = false; }
+      if (automationIdeas.length === 0) { ideasEl.focus(); valid = false; }
       if (!valid) return;
-
-      const whatsapp = countryCode + localNumber; // concatenado limpio
 
       submitBtn.disabled = true;
       submitText.textContent = 'Abriendo guía...';
@@ -203,6 +278,7 @@
       const payload = {
         email,
         whatsapp,
+        automationIdeas,
         utm: getUTMParameters(),
         timestamp: new Date().toISOString(),
         event: getEventSlug()
