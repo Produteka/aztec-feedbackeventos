@@ -21,15 +21,6 @@
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     .focus\:ring-emerald-500:focus{--tw-ring-color:var(--brand-light)!important;}
     .focus\:border-emerald-500:focus{border-color:var(--brand-light)!important;}
-
-    /* Estrellas */
-    .star{transition:.25s;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.08))}
-    .star:hover{transform:scale(1.06)}
-    #stars{white-space:nowrap}
-    .star svg{width:34px;height:34px}
-    @media (max-width:480px){ .star svg{width:26px;height:26px} }
-    .star.inactive .star-fill{ fill:#c9d1d9; stroke:#7a8894; stroke-width:1.2; opacity:.95; }
-    .star.active .star-fill{ fill:var(--brand-dark); stroke:var(--brand-dark); stroke-width:1.2; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-green-50 min-h-screen py-12 px-6">
@@ -46,47 +37,30 @@
         </p>
       </div>
 
-      <!-- Imagen del flujo (AHORA va aquí, antes de la card verde) -->
+      <!-- Imagen del flujo -->
       <div id="flowWrapper" class="mt-4 mb-8 flex justify-center">
         <img id="flowImage" src="" alt="" loading="lazy"
              class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
       </div>
 
-      <form id="feedbackForm" class="space-y-10">
-        <!-- Rating -->
-        <div class="card-highlight rounded-2xl p-8 shadow-sm">
-          <label class="block text-xl font-semibold mb-6 text-center title-refined">
-            ¿Cómo calificarías este evento en general?
-          </label>
-
-          <div class="flex justify-center gap-3 mb-6" id="stars" role="radiogroup" aria-label="Calificación">
-            <template id="starTpl">
-              <div class="star inactive" role="radio" aria-checked="false" tabindex="0">
-                <svg viewBox="0 0 24 24" class="star-fill" aria-hidden="true">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                </svg>
-              </div>
-            </template>
+      <!-- Formulario simple (correo + WhatsApp) -->
+      <form id="accessForm" class="space-y-8">
+        <div class="card-highlight rounded-2xl p-8 shadow-sm space-y-6">
+          <div>
+            <label for="email" class="block text-xl font-semibold mb-2 title-refined">Correo electrónico</label>
+            <input id="email" name="email" type="email" required
+              autocomplete="email"
+              class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300"
+              placeholder="tu@correo.com">
           </div>
 
-          <div class="text-center">
-            <span id="ratingText" class="text-brand-dark font-medium text-lg">
-              Haz clic en una estrella para calificar
-            </span>
-          </div>
-          <input type="hidden" id="rating" name="rating">
-        </div>
-
-        <!-- Ideas -->
-        <div class="card-highlight rounded-2xl p-8 shadow-sm">
-          <label for="automationIdeas" class="block text-xl font-semibold mb-6 title-refined">
-            ¿Qué automatizaciones te gustaría ver en futuros eventos?
-          </label>
-          <textarea id="automationIdeas" name="automationIdeas" rows="6" maxlength="500"
-            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-800 leading-relaxed"
-            placeholder="Comparte tus ideas sobre automatizaciones que te gustaría ver en futuros eventos..." required></textarea>
-          <div class="text-sm text-brand-dark mt-3 font-medium">
-            <span id="charCount">0</span>/500 caracteres
+          <div>
+            <label for="whatsapp" class="block text-xl font-semibold mb-2 title-refined">Número de WhatsApp</label>
+            <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" required
+              pattern="^\+?\d[\d\s\-()]{6,}$"
+              class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300"
+              placeholder="+57 300 123 4567">
+            <p class="text-sm text-brand-dark mt-2">Incluye el código de país (ej: +57).</p>
           </div>
         </div>
 
@@ -103,6 +77,7 @@
   </div>
 
   <script>
+    // --- Helpers UTM/Event ---
     function getUTMParameters() {
       const urlParams = new URLSearchParams(window.location.search);
       const utmParams = {};
@@ -111,17 +86,16 @@
       });
       return utmParams;
     }
-
     function getEventSlug() {
       const p = new URLSearchParams(location.search);
       return p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
     }
 
+    // Resolver info de la guía y la imagen
     async function resolveEventData() {
       const slug = getEventSlug();
       const fallback = { redirect: 'https://google.com', image: '', alt: 'Guía paso a paso' };
       if (!slug) return { slug: null, ...fallback };
-
       try {
         const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
         const txt = await res.text();
@@ -140,82 +114,41 @@
       }
     }
 
-    // Pintar imagen del flujo (arriba, antes de la card verde)
+    // Pintar imagen del flujo
     (async function hydrateImage() {
       const { image, alt } = await resolveEventData();
       const imgEl = document.getElementById('flowImage');
       const wrap = document.getElementById('flowWrapper');
-      if (imgEl && image) {
-        imgEl.src = image; imgEl.alt = alt; imgEl.classList.remove('hidden');
-      } else if (wrap) {
-        wrap.style.display = 'none';
-      }
+      if (imgEl && image) { imgEl.src = image; imgEl.alt = alt; imgEl.classList.remove('hidden'); }
+      else if (wrap) { wrap.style.display = 'none'; }
     })();
 
-    // Estrellas
-    const starsWrap = document.getElementById('stars');
-    const ratingInput = document.getElementById('rating');
-    const ratingText = document.getElementById('ratingText');
-    const labels = {1:'Deficiente',2:'Regular',3:'Bueno',4:'Muy Bueno',5:'Excelente'};
-    let selectedRating = 0;
-
-    const tpl = document.getElementById('starTpl').content;
-    const stars = [];
-    for (let i=1;i<=5;i++){
-      const node = tpl.cloneNode(true);
-      const el = node.querySelector('.star');
-      el.dataset.rating = i;
-      el.setAttribute('aria-label', `${i} ${i===1?'estrella':'estrellas'}`);
-      starsWrap.appendChild(node);
-      stars.push(starsWrap.lastElementChild);
-    }
-
-    function highlight(r){
-      stars.forEach((s, idx)=>{
-        const active = idx < r;
-        s.classList.toggle('active', active);
-        s.classList.toggle('inactive', !active);
-        s.setAttribute('aria-checked', active && idx === r-1 ? 'true' : 'false');
-      });
-    }
-
-    stars.forEach(star=>{
-      star.addEventListener('click', ()=>{
-        selectedRating = parseInt(star.dataset.rating);
-        ratingInput.value = selectedRating;
-        ratingText.textContent = labels[selectedRating];
-        highlight(selectedRating);
-      });
-      star.addEventListener('keydown', (e)=>{
-        const r = parseInt(star.dataset.rating);
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); star.click(); }
-        if (e.key === 'ArrowRight' && r < 5) stars[r].focus();
-        if (e.key === 'ArrowLeft' && r > 1) stars[r-2].focus();
-      });
-    });
-
-    // Contador
-    const textarea = document.getElementById('automationIdeas');
-    const charCount = document.getElementById('charCount');
-    textarea.addEventListener('input', ()=>{ charCount.textContent = textarea.value.length; });
-
-    // Submit
-    const form = document.getElementById('feedbackForm');
+    // --- Submit ---
+    const form = document.getElementById('accessForm');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
     const loadingSpinner = document.getElementById('loadingSpinner');
 
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      if (!selectedRating) { alert('Por favor selecciona una calificación.'); return; }
+
+      const email = document.getElementById('email').value.trim();
+      const whatsappRaw = document.getElementById('whatsapp').value.trim();
+      const whatsapp = whatsappRaw.replace(/[^\d+]/g,''); // limpiamos manteniendo '+' y dígitos
+
+      if (!email) { alert('Por favor ingresa tu correo.'); return; }
+      if (!whatsapp || whatsapp.replace(/\D/g,'').length < 7) {
+        alert('Por favor ingresa un WhatsApp válido.');
+        return;
+      }
 
       submitBtn.disabled = true;
       submitText.textContent = 'Abriendo guía...';
       loadingSpinner.classList.remove('hidden');
 
-      const formData = {
-        rating: selectedRating,
-        automationIdeas: textarea.value.trim(),
+      const payload = {
+        email,
+        whatsapp,
         utm: getUTMParameters(),
         timestamp: new Date().toISOString(),
         event: getEventSlug()
@@ -225,15 +158,15 @@
         const resp = await fetch('/api/feedback', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(formData)
+          body: JSON.stringify(payload)
         });
-        if (!resp.ok) throw new Error('Error al enviar feedback');
+        if (!resp.ok) throw new Error('Error al enviar datos');
 
         const { redirect } = await resolveEventData();
         window.location.href = redirect;
       } catch (err) {
         console.error(err);
-        alert('Hubo un error al enviar tu feedback. Intenta de nuevo.');
+        alert('Hubo un error al enviar tus datos. Intenta de nuevo.');
         submitBtn.disabled = false;
         submitText.textContent = 'Ir a la guía';
         loadingSpinner.classList.add('hidden');
