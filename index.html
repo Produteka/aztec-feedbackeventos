@@ -43,25 +43,55 @@
              class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
       </div>
 
-      <!-- Formulario simple (correo + WhatsApp) -->
-      <form id="accessForm" class="space-y-8">
+      <!-- FORM: solo correo y WhatsApp -->
+      <form id="accessForm" class="space-y-8" novalidate>
         <div class="card-highlight rounded-2xl p-8 shadow-sm space-y-6">
+
+          <!-- Email -->
           <div>
             <label for="email" class="block text-xl font-semibold mb-2 title-refined">Correo electrónico</label>
-            <input id="email" name="email" type="email" required
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
               autocomplete="email"
+              inputmode="email"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300"
-              placeholder="tu@correo.com">
+              placeholder="tu@correo.com"
+            />
+            <p id="emailError" class="text-sm text-red-600 mt-1 hidden">Escribe un correo válido.</p>
           </div>
 
+          <!-- WhatsApp con select de indicativo -->
           <div>
-            <label for="whatsapp" class="block text-xl font-semibold mb-2 title-refined">Número de WhatsApp</label>
-            <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" required
-              pattern="^\+?\d[\d\s\-()]{6,}$"
-              class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300"
-              placeholder="+57 300 123 4567">
-            <p class="text-sm text-brand-dark mt-2">Incluye el código de país (ej: +57).</p>
+            <label class="block text-xl font-semibold mb-2 title-refined">Número de WhatsApp</label>
+            <div class="flex gap-3">
+              <select id="countryCode" name="countryCode" required
+                class="px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                <option value="+57" selected>🇨🇴 +57</option>
+                <option value="+52">🇲🇽 +52</option>
+                <option value="+54">🇦🇷 +54</option>
+                <option value="+56">🇨🇱 +56</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+1">🇺🇸 +1</option>
+              </select>
+              <input
+                id="whatsapp"
+                name="whatsapp"
+                type="tel"
+                required
+                inputmode="numeric"
+                pattern="^[0-9]{7,12}$"
+                class="flex-1 px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                placeholder="3001234567"
+              />
+            </div>
+            <p class="text-sm text-brand-dark mt-2">Escribe el número sin el código de país. Solo dígitos (7–12).</p>
+            <p id="phoneError" class="text-sm text-red-600 mt-1 hidden">Revisa el número: deben ser 7 a 12 dígitos.</p>
           </div>
+
         </div>
 
         <!-- Submit -->
@@ -77,21 +107,22 @@
   </div>
 
   <script>
-    // --- Helpers UTM/Event ---
+    /* ---------------- Helpers UTM / evento ---------------- */
     function getUTMParameters() {
       const urlParams = new URLSearchParams(window.location.search);
-      const utmParams = {};
+      const utm = {};
       ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k=>{
-        if (urlParams.has(k)) utmParams[k] = urlParams.get(k);
+        if (urlParams.has(k)) utm[k] = urlParams.get(k);
       });
-      return utmParams;
+      // valor por defecto si no viene nada
+      if (!utm.utm_source) utm.utm_source = 'direct';
+      return utm;
     }
     function getEventSlug() {
       const p = new URLSearchParams(location.search);
       return p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
     }
 
-    // Resolver info de la guía y la imagen
     async function resolveEventData() {
       const slug = getEventSlug();
       const fallback = { redirect: 'https://google.com', image: '', alt: 'Guía paso a paso' };
@@ -123,7 +154,28 @@
       else if (wrap) { wrap.style.display = 'none'; }
     })();
 
-    // --- Submit ---
+    /* ---------------- Validaciones lado cliente ---------------- */
+    const emailEl = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const phoneEl = document.getElementById('whatsapp');
+    const phoneError = document.getElementById('phoneError');
+    const ccEl = document.getElementById('countryCode');
+
+    function isValidEmail(v){
+      return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
+    }
+    function isValidLocalNumber(v){
+      return /^[0-9]{7,12}$/.test(v);
+    }
+
+    emailEl.addEventListener('input', ()=>{
+      emailError.classList.toggle('hidden', isValidEmail(emailEl.value.trim()));
+    });
+    phoneEl.addEventListener('input', ()=>{
+      phoneError.classList.toggle('hidden', isValidLocalNumber(phoneEl.value.trim()));
+    });
+
+    /* ---------------- Submit ---------------- */
     const form = document.getElementById('accessForm');
     const submitBtn = document.getElementById('submitBtn');
     const submitText = document.getElementById('submitText');
@@ -132,15 +184,17 @@
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
 
-      const email = document.getElementById('email').value.trim();
-      const whatsappRaw = document.getElementById('whatsapp').value.trim();
-      const whatsapp = whatsappRaw.replace(/[^\d+]/g,''); // limpiamos manteniendo '+' y dígitos
+      const email = emailEl.value.trim();
+      const localNumber = phoneEl.value.trim();
+      const countryCode = ccEl.value;
 
-      if (!email) { alert('Por favor ingresa tu correo.'); return; }
-      if (!whatsapp || whatsapp.replace(/\D/g,'').length < 7) {
-        alert('Por favor ingresa un WhatsApp válido.');
-        return;
-      }
+      // Validación
+      let valid = true;
+      if (!isValidEmail(email)) { emailError.classList.remove('hidden'); valid = false; }
+      if (!isValidLocalNumber(localNumber)) { phoneError.classList.remove('hidden'); valid = false; }
+      if (!valid) return;
+
+      const whatsapp = countryCode + localNumber; // concatenado limpio
 
       submitBtn.disabled = true;
       submitText.textContent = 'Abriendo guía...';
