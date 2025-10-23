@@ -9,7 +9,6 @@
     :root{ --brand-light:#aaeba3; --brand-dark:#214b36; }
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     body{font-family:'Inter',sans-serif;letter-spacing:-0.01em}
-
     .card-highlight{background:linear-gradient(135deg,#ecfdf5 0%, var(--brand-light) 100%);border:1px solid var(--brand-light)}
     .brand-bg{background:linear-gradient(135deg,#0d3326 0%,#064e3b 100%)}
     .title-refined{letter-spacing:-0.02em;line-height:1.1;color:var(--brand-dark)}
@@ -43,114 +42,44 @@
              class="w-full max-w-3xl rounded-2xl shadow-lg border border-gray-200 hidden" />
       </div>
 
-      <!-- FORM: correo + WhatsApp + ideas -->
+      <!-- FORM -->
       <form id="accessForm" class="space-y-6 sm:space-y-8" novalidate>
         <div class="card-highlight rounded-2xl p-5 sm:p-8 shadow-sm space-y-6">
+
           <!-- Email -->
           <div>
             <label for="email" class="block text-lg sm:text-xl font-semibold mb-2 title-refined">Correo electrónico</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autocomplete="email"
-              inputmode="email"
-              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            <input id="email" name="email" type="email" required
               class="w-full px-5 sm:px-6 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300"
-              placeholder="tu@correo.com"
-            />
+              placeholder="tu@correo.com"/>
             <p id="emailError" class="text-sm text-red-600 mt-1 hidden">Escribe un correo válido.</p>
           </div>
 
-          <!-- WhatsApp (responsive + solo banderita y código) -->
+          <!-- WhatsApp -->
           <div>
             <label class="block text-lg sm:text-xl font-semibold mb-2 title-refined">Número de WhatsApp</label>
             <div class="flex flex-col sm:flex-row gap-3">
-              <select id="countryCode" name="countryCode" required
-                class="w-24 sm:w-28 md:w-32 px-3 sm:px-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <select id="countryCode" class="w-24 sm:w-28 md:w-32 px-3 sm:px-4 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="+57" selected>🇨🇴 +57</option>
                 <option value="+52">🇲🇽 +52</option>
-                <option value="+54">🇦🇷 +54</option>
-                <option value="+56">🇨🇱 +56</option>
-                <option value="+51">🇵🇪 +51</option>
-                <option value="+58">🇻🇪 +58</option>
-                <option value="+34">🇪🇸 +34</option>
                 <option value="+1">🇺🇸 +1</option>
-                <option value="+55">🇧🇷 +55</option>
-                <option value="+593">🇪🇨 +593</option>
-                <option value="+598">🇺🇾 +598</option>
-                <option value="+507">🇵🇦 +507</option>
-                <option value="+506">🇨🇷 +506</option>
-                <option value="+503">🇸🇻 +503</option>
-                <option value="+502">🇬🇹 +502</option>
-                <option value="+504">🇭🇳 +504</option>
-                <option value="+505">🇳🇮 +505</option>
-                <option value="+53">🇨🇺 +53</option>
-                <option value="+44">🇬🇧 +44</option>
-                <option value="+33">🇫🇷 +33</option>
-                <option value="+49">🇩🇪 +49</option>
-                <option value="+39">🇮🇹 +39</option>
-                <option value="+31">🇳🇱 +31</option>
-                <option value="+41">🇨🇭 +41</option>
-                <option value="+47">🇳🇴 +47</option>
-                <option value="+46">🇸🇪 +46</option>
-                <option value="+45">🇩🇰 +45</option>
-                <option value="+351">🇵🇹 +351</option>
-                <option value="+30">🇬🇷 +30</option>
-                <option value="+90">🇹🇷 +90</option>
-                <option value="+972">🇮🇱 +972</option>
-                <option value="+971">🇦🇪 +971</option>
-                <option value="+966">🇸🇦 +966</option>
-                <option value="+91">🇮🇳 +91</option>
-                <option value="+81">🇯🇵 +81</option>
-                <option value="+82">🇰🇷 +82</option>
-                <option value="+86">🇨🇳 +86</option>
-                <option value="+63">🇵🇭 +63</option>
-                <option value="+62">🇮🇩 +62</option>
-                <option value="+60">🇲🇾 +60</option>
-                <option value="+65">🇸🇬 +65</option>
-                <option value="+66">🇹🇭 +66</option>
-                <option value="+84">🇻🇳 +84</option>
-                <option value="+61">🇦🇺 +61</option>
-                <option value="+64">🇳🇿 +64</option>
-                <option value="+27">🇿🇦 +27</option>
-                <option value="+20">🇪🇬 +20</option>
-                <option value="+212">🇲🇦 +212</option>
-                <option value="+216">🇹🇳 +216</option>
-                <option value="+234">🇳🇬 +234</option>
-                <option value="+254">🇰🇪 +254</option>
               </select>
-
-              <input
-                id="whatsapp"
-                name="whatsapp"
-                type="tel"
-                required
-                inputmode="numeric"
-                pattern="^[0-9]{6,12}$"
+              <input id="whatsapp" name="whatsapp" type="tel" required inputmode="numeric" pattern="^[0-9]{6,12}$"
                 class="flex-1 px-5 sm:px-6 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                placeholder="3001234567"
-              />
+                placeholder="3001234567"/>
             </div>
             <p class="text-sm text-brand-dark mt-2">Escribe el número sin el código de país. Solo dígitos (6–12).</p>
             <p id="phoneError" class="text-sm text-red-600 mt-1 hidden">Revisa el número: deben ser 6 a 12 dígitos.</p>
           </div>
 
-          <!-- Ideas de automatizaciones -->
+          <!-- Ideas -->
           <div>
             <label for="automationIdeas" class="block text-lg sm:text-xl font-semibold mb-2 title-refined">
               ¿Qué automatizaciones te gustaría ver en futuros eventos?
             </label>
-            <textarea
-              id="automationIdeas"
-              name="automationIdeas"
-              rows="6"
-              maxlength="500"
-              required
+            <textarea id="automationIdeas" rows="6" maxlength="500" required
               class="w-full px-5 sm:px-6 py-3.5 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none transition-all duration-300 text-gray-800 leading-relaxed"
-              placeholder="Comparte tus ideas sobre automatizaciones que te gustaría ver en futuros eventos..."
-            ></textarea>
+              placeholder="Comparte tus ideas..."></textarea>
             <div class="text-sm text-brand-dark mt-2 font-medium">
               <span id="charCount">0</span>/500 caracteres
             </div>
@@ -162,7 +91,7 @@
           <button type="submit" id="submitBtn"
             class="submit-btn text-white font-bold py-4 sm:py-5 px-8 sm:px-12 rounded-2xl text-lg sm:text-xl inline-flex items-center space-x-3 shadow-lg">
             <span id="submitText">Ir a la guía</span>
-            <div id="loadingSpinner" class="loading-spinner hidden" aria-hidden="true"></div>
+            <div id="loadingSpinner" class="loading-spinner hidden"></div>
           </button>
         </div>
       </form>
@@ -170,7 +99,7 @@
   </div>
 
   <script>
-    /* ---------------- Helpers UTM / evento ---------------- */
+    /* ---------------- Helpers ---------------- */
     function getUTMParameters() {
       const urlParams = new URLSearchParams(window.location.search);
       const utm = {};
@@ -180,6 +109,7 @@
       if (!utm.utm_source) utm.utm_source = 'website';
       return utm;
     }
+
     function getEventSlug() {
       const p = new URLSearchParams(location.search);
       const raw = p.get('event') || p.get('utm_campaign') || p.get('utm_content') || null;
@@ -187,29 +117,44 @@
       return String(raw).split('?')[0].split('#')[0].split('&')[0];
     }
 
+    // ✅ BLOQUE CORREGIDO
     async function resolveEventData() {
       const slug = getEventSlug();
-      const fallback = { redirect: 'https://google.com', image: '', alt: 'Guía paso a paso' };
+      const fallback = {
+        redirect: "https://google.com",
+        image: "",
+        alt: "Guía paso a paso"
+      };
       if (!slug) return { slug: null, ...fallback };
+
       try {
-        const res = await fetch('/guides.json?ts=' + Date.now(), { cache: 'no-store' });
+        const res = await fetch(
+          "https://raw.githubusercontent.com/Produteka/aztec-feedbackeventos/main/guides.json",
+          { cache: "no-store" }
+        );
         const txt = await res.text();
-        const map = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
+        const map = JSON.parse(txt.replace(/^\uFEFF/, "").trim());
         const data = map[slug];
         if (!data) return { slug, ...fallback };
+
+        let imageURL = data.image || "";
+        if (imageURL.startsWith("/haz-tech")) {
+          imageURL = `https://raw.githubusercontent.com/Produteka/aztec-feedbackeventos/main${imageURL}`;
+        }
+
         return {
           slug,
           redirect: data.redirect || fallback.redirect,
-          image: data.image || '',
+          image: imageURL,
           alt: data.alt || fallback.alt
         };
       } catch (e) {
-        console.error('Error leyendo guides.json', e);
+        console.error("Error leyendo guides.json", e);
         return { slug, ...fallback };
       }
     }
 
-    // Pintar imagen del flujo
+    // Imagen del flujo
     (async function hydrateImage() {
       const { image, alt } = await resolveEventData();
       const imgEl = document.getElementById('flowImage');
@@ -218,7 +163,7 @@
       else if (wrap) { wrap.style.display = 'none'; }
     })();
 
-    /* ---------------- Validaciones lado cliente ---------------- */
+    /* ---------------- Validaciones ---------------- */
     const emailEl = document.getElementById('email');
     const emailError = document.getElementById('emailError');
     const phoneEl = document.getElementById('whatsapp');
@@ -269,12 +214,11 @@
       };
 
       try {
-        const resp = await fetch('/api/feedback', {
+        await fetch('/api/feedback', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify(payload)
         });
-        if (!resp.ok) throw new Error('Error al enviar datos');
 
         const { redirect } = await resolveEventData();
         window.location.href = redirect;
