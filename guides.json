@@ -54,9 +54,14 @@
     "image": "/haz_tech_11.png",
     "alt": "Recibe el paso a paso — Haz Tech 11"
    },
-   "haz-tech-11": {
+   "haz-tech-12": {
     "redirect": "https://produteka.notion.site/como-automatizar-la-creacion-de-documentos-con-ia",
     "image": "/haz-tech-12.png",
     "alt": "Recibe el paso a paso — Haz Tech 12"
+  },
+   "haz-tech-13": {
+    "redirect": "https://produteka.notion.site/como-automatizar-la-creacion-de-documentos-con-ia",
+    "image": "/haz-tech-13.png",
+    "alt": "Recibe el paso a paso — Haz Tech 13"
   }
 }
