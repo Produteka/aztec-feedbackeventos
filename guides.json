@@ -93,5 +93,25 @@
     "redirect": "https://azteclab.notion.site/como-crear-workflows-de-n8n-en-minutos-con-ia",
     "image": "/haz-tech-19.png",
     "alt": "Recibe el paso a paso — Haz Tech 19"
-  }
+  },
+   "haz-tech-18": {
+    "redirect": "https://azteclab.notion.site/como-instalar-tu-propio-asistente-de-ia-que-trabaja-24-7",
+    "image": "/haz-tech-20.png",
+    "alt": "Recibe el paso a paso — Haz Tech 20"  
+  },
+   "haz-tech-20": {
+    "redirect": "https://azteclab.notion.site/como-instalar-tu-propio-asistente-de-ia-que-trabaja-24-7",
+    "image": "/haz-tech-20.png",
+    "alt": "Recibe el paso a paso — Haz Tech 20"
+  },
+   "haz-tech-21": {
+    "redirect": "https://azteclab.notion.site/como-instalar-tu-propio-asistente-de-ia-que-trabaja-24-7",
+    "image": "/haz-tech-21.png",
+    "alt": "Recibe el paso a paso — Haz Tech 21"
+  },
+   "haz-tech-22": {
+    "redirect": "https://azteclab.notion.site/como-instalar-tu-propio-asistente-de-ia-que-trabaja-24-7",
+    "image": "/haz-tech-22.png",
+    "alt": "Recibe el paso a paso — Haz Tech 22"
+  }  
 }
